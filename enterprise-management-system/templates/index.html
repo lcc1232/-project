@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业员工管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f0f2f5;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--primary-gradient);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 15px 30px;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-header {
+            background: var(--primary-gradient);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .auth-header i { font-size: 3rem; margin-bottom: 15px; }
+        .auth-header h2 { font-size: 1.8rem; font-weight: bold; }
+
+        .auth-body { padding: 30px; }
+
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            padding: 12px 20px;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .dashboard-container { padding: 30px; }
+
+        .stats-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stats-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .stats-number { font-size: 2rem; font-weight: bold; }
+        .stats-label { color: #666; }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 20px;
+            font-weight: bold;
+            border-radius: 20px 20px 0 0 !important;
+        }
+
+        .table thead th {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+        }
+
+        .table tbody tr:hover { background: #f8f9fa; }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .nav-tabs {
+            border: none;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .modal-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 15px; }
+            .navbar-brand { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-building"></i>
+                <h2>企业管理系统</h2>
+            </div>
+            <div class="auth-body">
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-control" id="password" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </button>
+                </form>
+                <p class="text-center mt-4 mb-0">
+                    还没有账号？<a href="#" onclick="showRegister()">立即注册</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册页面 -->
+    <div id="registerPage" class="auth-container" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>注册账号</h2>
+            </div>
+            <div class="auth-body">
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="regUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">邮箱</label>
+                        <input type="email" class="form-control" id="regEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-control" id="regPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-control" id="regFullName" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="regIsAdmin" onchange="toggleAdminKey()">
+                        <label class="form-check-label" for="regIsAdmin">注册为管理员</label>
+                    </div>
+                    <div class="mb-3" id="adminKeyField" style="display: none;">
+                        <label class="form-label">管理员密钥</label>
+                        <input type="password" class="form-control" id="adminKey" placeholder="请输入管理员密钥">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-user-plus"></i> 注册
+                    </button>
+                </form>
+                <p class="text-center mt-4 mb-0">
+                    已有账号？<a href="#" onclick="showLogin()">返回登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主面板 -->
+    <div id="dashboard" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-building"></i> 企业管理系统
+                </a>
+                <div class="d-flex align-items-center">
+                    <div class="user-info me-3">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <div id="currentUser" class="fw-bold"></div>
+                            <small id="userRole"></small>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-light" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> 退出
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="dashboard-container">
+            <!-- 统计卡片 -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stats-card" onclick="showAllUsers()">
+                        <div class="icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stats-number" id="totalEmployees">0</div>
+                        <div class="stats-label">员工总数（点击查看）</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" onclick="showAllTasks()">
+                        <div class="icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stats-number" id="totalTasks">0</div>
+                        <div class="stats-label">总任务数（点击查看）</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" onclick="showPendingLeaves()">
+                        <div class="icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stats-number" id="pendingLeaves">0</div>
+                        <div class="stats-label">待审批请假（点击审批）</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" onclick="showAllAnnouncements()">
+                        <div class="icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="stats-number" id="totalAnnouncements">0</div>
+                        <div class="stats-label">公告总数（点击查看）</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 管理员面板 -->
+            <div id="adminPanel" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-building"></i> 部门管理
+                        <button class="btn btn-primary btn-sm float-end" onclick="showAddDept()">
+                            <i class="fas fa-plus"></i> 添加部门
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>部门名称</th>
+                                        <th>描述</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="departmentTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i> 员工管理
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>用户名</th>
+                                        <th>姓名</th>
+                                        <th>邮箱</th>
+                                        <th>部门</th>
+                                        <th>角色</th>
+                                        <th>分配部门</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeeTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 普通用户面板 -->
+            <div id="userPanel">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#attendance">
+                            <i class="fas fa-clock"></i> 考勤管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tasks">
+                            <i class="fas fa-tasks"></i> 任务管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#leave">
+                            <i class="fas fa-calendar"></i> 请假管理
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="attendance">
+                        <div class="card">
+                            <div class="card-header">考勤打卡</div>
+                            <div class="card-body">
+                                <button class="btn btn-success" onclick="checkIn()">上班打卡</button>
+                                <button class="btn btn-danger" onclick="checkOut()">下班打卡</button>
+                                <div class="table-responsive mt-3">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>日期</th>
+                                                <th>上班</th>
+                                                <th>下班</th>
+                                                <th>状态</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="attendanceTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tasks">
+                        <div class="card">
+                            <div class="card-header">
+                                任务列表
+                                <button class="btn btn-primary btn-sm float-end" onclick="showAddTask()">新建任务</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>标题</th>
+                                                <th>优先级</th>
+                                                <th>状态</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tasksTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="leave">
+                        <div class="card">
+                            <div class="card-header">
+                                请假申请
+                                <button class="btn btn-primary btn-sm float-end" onclick="showAddLeave()">申请请假</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>类型</th>
+                                                <th>开始</th>
+                                                <th>结束</th>
+                                                <th>状态</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="leaveTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 所有用户模态框 -->
+    <div class="modal fade" id="allUsersModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">所有员工</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>用户名</th>
+                                    <th>姓名</th>
+                                    <th>邮箱</th>
+                                    <th>部门</th>
+                                    <th>角色</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allUsersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 所有任务模态框 -->
+    <div class="modal fade" id="allTasksModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">所有任务</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>优先级</th>
+                                    <th>状态</th>
+                                    <th>截止日期</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allTasksTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待审批请假模态框 -->
+    <div class="modal fade" id="pendingLeavesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">待审批请假</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>申请人</th>
+                                    <th>类型</th>
+                                    <th>开始日期</th>
+                                    <th>结束日期</th>
+                                    <th>原因</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingLeavesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 所有公告模态框 -->
+    <div class="modal fade" id="allAnnouncementsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">所有公告</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="allAnnouncementsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加部门模态框 -->
+    <div class="modal fade" id="addDeptModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加部门</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-2" id="deptName" placeholder="部门名称">
+                    <textarea class="form-control" id="deptDescription" placeholder="部门描述"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="createDepartment()">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加任务模态框 -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新建任务</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-2" id="taskTitle" placeholder="任务标题">
+                    <textarea class="form-control mb-2" id="taskDescription" placeholder="任务描述"></textarea>
+                    <select class="form-control mb-2" id="taskPriority">
+                        <option value="low">低</option>
+                        <option value="medium" selected>中</option>
+                        <option value="high">高</option>
+                        <option value="urgent">紧急</option>
+                    </select>
+                    <input type="date" class="form-control" id="taskDueDate">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="createTask()">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加请假模态框 -->
+    <div class="modal fade" id="addLeaveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">申请请假</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-control mb-2" id="leaveType">
+                        <option value="annual">年假</option>
+                        <option value="sick">病假</option>
+                        <option value="personal">事假</option>
+                    </select>
+                    <input type="date" class="form-control mb-2" id="leaveStartDate">
+                    <input type="date" class="form-control mb-2" id="leaveEndDate">
+                    <textarea class="form-control" id="leaveReason" placeholder="请假原因"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button class="btn btn-primary" onclick="createLeave()">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+        let authToken = localStorage.getItem('authToken') || null;
+        let currentUser = null;
+
+        if (authToken) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+            autoLogin();
+        }
+
+        function toggleAdminKey() {
+            const isAdmin = document.getElementById('regIsAdmin').checked;
+            document.getElementById('adminKeyField').style.display = isAdmin ? 'block' : 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'flex';
+        }
+
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('registerPage').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            
+            if (currentUser) {
+                document.getElementById('currentUser').textContent = currentUser.full_name || currentUser.username;
+                document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '管理员' : currentUser.role === 'manager' ? '经理' : '员工';
+                
+                if (currentUser.role === 'admin') {
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('userPanel').style.display = 'none';
+                    loadAdminPanel();
+                } else {
+                    document.getElementById('adminPanel').style.display = 'none';
+                    document.getElementById('userPanel').style.display = 'block';
+                    loadDashboardData();
+                }
+            }
+        }
+
+        async function autoLogin() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/auth/me`);
+                currentUser = response.data;
+                showDashboard();
+            } catch (error) {
+                localStorage.removeItem('authToken');
+                authToken = null;
+                showLogin();
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
+                authToken = response.data.access_token;
+                currentUser = response.data.user;
+                localStorage.setItem('authToken', authToken);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+                showDashboard();
+            } catch (error) {
+                alert('登录失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const isAdmin = document.getElementById('regIsAdmin').checked;
+            const userData = {
+                username: document.getElementById('regUsername').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                full_name: document.getElementById('regFullName').value,
+                is_admin: isAdmin
+            };
+            
+            if (isAdmin) {
+                userData.admin_key = document.getElementById('adminKey').value;
+            }
+            
+            try {
+                await axios.post(`${API_BASE_URL}/auth/register`, userData);
+                alert('注册成功！请登录');
+                showLogin();
+                document.getElementById('registerForm').reset();
+                document.getElementById('adminKeyField').style.display = 'none';
+            } catch (error) {
+                alert('注册失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        });
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            delete axios.defaults.headers.common['Authorization'];
+            document.getElementById('dashboard').style.display = 'none';
+            showLogin();
+        }
+
+        async function loadDashboardData() {
+            try {
+                const [usersRes, tasksRes, leavesRes, announcementsRes] = await Promise.all([
+                    axios.get(`${API_BASE_URL}/users`),
+                    axios.get(`${API_BASE_URL}/tasks`),
+                    axios.get(`${API_BASE_URL}/leave-requests`),
+                    axios.get(`${API_BASE_URL}/announcements`)
+                ]);
+                
+                document.getElementById('totalEmployees').textContent = usersRes.data.total || 0;
+                document.getElementById('totalTasks').textContent = tasksRes.data.total || 0;
+                
+                const leaves = leavesRes.data.records || [];
+                const pendingLeaves = leaves.filter(l => l.status === 'pending');
+                document.getElementById('pendingLeaves').textContent = pendingLeaves.length;
+                document.getElementById('totalAnnouncements').textContent = announcementsRes.data.total || 0;
+                
+                loadAttendanceTable();
+                loadTasksTable();
+                loadLeaveTable();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+            }
+        }
+
+        async function loadAdminPanel() {
+            await loadDepartments();
+            await loadEmployees();
+            await loadDashboardData();
+        }
+
+        async function loadDepartments() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/departments`);
+                const departments = response.data || [];
+                document.getElementById('departmentTable').innerHTML = departments.map(dept => `
+                    <tr>
+                        <td>${dept.dept_name}</td>
+                        <td>${dept.description || '-'}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteDepartment(${dept.dept_id})">删除</button></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="3" class="text-center">暂无部门</td></tr>';
+            } catch (error) {
+                console.error('加载部门失败:', error);
+            }
+        }
+
+        async function loadEmployees() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/users?per_page=100`);
+                const users = response.data.users || [];
+                document.getElementById('employeeTable').innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.full_name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.department || '-'}</td>
+                        <td>${user.role}</td>
+                        <td>
+                            <select class="form-select form-select-sm" onchange="assignDepartment(${user.user_id}, this.value)">
+                                <option value="">选择部门</option>
+                                <option value="技术部">技术部</option>
+                                <option value="市场部">市场部</option>
+                                <option value="人事部">人事部</option>
+                                <option value="财务部">财务部</option>
+                                <option value="销售部">销售部</option>
+                                <option value="客服部">客服部</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center">暂无员工</td></tr>';
+            } catch (error) {
+                console.error('加载员工失败:', error);
+            }
+        }
+
+        async function assignDepartment(userId, department) {
+            if (!department) return;
+            try {
+                await axios.put(`${API_BASE_URL}/users/${userId}/department`, { department });
+                alert('部门分配成功');
+                loadEmployees();
+            } catch (error) {
+                alert('部门分配失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        function showAddDept() {
+            const modal = new bootstrap.Modal(document.getElementById('addDeptModal'));
+            modal.show();
+        }
+
+        async function createDepartment() {
+            const deptName = document.getElementById('deptName').value;
+            const description = document.getElementById('deptDescription').value;
+            
+            if (!deptName) { alert('请输入部门名称'); return; }
+            
+            try {
+                await axios.post(`${API_BASE_URL}/departments`, { dept_name: deptName, description });
+                alert('部门创建成功');
+                bootstrap.Modal.getInstance(document.getElementById('addDeptModal')).hide();
+                document.getElementById('deptName').value = '';
+                document.getElementById('deptDescription').value = '';
+                loadDepartments();
+            } catch (error) {
+                alert('创建失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        async function deleteDepartment(deptId) {
+            if (!confirm('确定删除此部门？')) return;
+            try {
+                await axios.delete(`${API_BASE_URL}/departments/${deptId}`);
+                loadDepartments();
+            } catch (error) {
+                alert('删除失败');
+            }
+        }
+
+        async function showAllUsers() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/users?per_page=100`);
+                const users = response.data.users || [];
+                document.getElementById('allUsersTable').innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.full_name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.department || '-'}</td>
+                        <td>${user.role}</td>
+                    </tr>
+                `).join('');
+                const modal = new bootstrap.Modal(document.getElementById('allUsersModal'));
+                modal.show();
+            } catch (error) {
+                console.error('加载用户失败:', error);
+            }
+        }
+
+        async function showAllTasks() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/tasks`);
+                const tasks = response.data.tasks || [];
+                document.getElementById('allTasksTable').innerHTML = tasks.map(task => `
+                    <tr>
+                        <td>${task.title}</td>
+                        <td>${task.priority}</td>
+                        <td>${task.status}</td>
+                        <td>${task.due_date || '-'}</td>
+                    </tr>
+                `).join('');
+                const modal = new bootstrap.Modal(document.getElementById('allTasksModal'));
+                modal.show();
+            } catch (error) {
+                console.error('加载任务失败:', error);
+            }
+        }
+
+        async function showPendingLeaves() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/leave-requests`);
+                const leaves = response.data.records || [];
+                const pendingLeaves = leaves.filter(l => l.status === 'pending');
+                
+                document.getElementById('pendingLeavesTable').innerHTML = pendingLeaves.map(leave => `
+                    <tr>
+                        <td>${leave.user_id}</td>
+                        <td>${leave.leave_type}</td>
+                        <td>${leave.start_date}</td>
+                        <td>${leave.end_date}</td>
+                        <td>${leave.reason || '-'}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approveLeave(${leave.leave_id}, 'approved')">批准</button>
+                            <button class="btn-reject" onclick="approveLeave(${leave.leave_id}, 'rejected')">拒绝</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="text-center">暂无待审批请假</td></tr>';
+                
+                const modal = new bootstrap.Modal(document.getElementById('pendingLeavesModal'));
+                modal.show();
+            } catch (error) {
+                console.error('加载请假失败:', error);
+            }
+        }
+
+        async function approveLeave(leaveId, status) {
+    try {
+        await axios.put(`${API_BASE_URL}/leave-requests/${leaveId}/approve`, { status });
+        
+        // 先关闭模态框
+        const modal = bootstrap.Modal.getInstance(document.getElementById('pendingLeavesModal'));
+        if (modal) {
+            modal.hide();
+        }
+        
+        // 移除模态框背景
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.remove();
+        });
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // 显示提示
+        alert(status === 'approved' ? '已批准' : '已拒绝');
+        
+        // 重新加载数据
+        loadDashboardData();
+        
+    } catch (error) {
+        alert('审批失败：' + (error.response?.data?.error || '未知错误'));
+    }
+}
+
+        async function showAllAnnouncements() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/announcements`);
+                const announcements = response.data.announcements || [];
+                document.getElementById('allAnnouncementsList').innerHTML = announcements.map(a => `
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h6>${a.title}</h6>
+                            <p class="mb-1">${a.content}</p>
+                            <small class="text-muted">${new Date(a.created_at).toLocaleString()}</small>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-center">暂无公告</p>';
+                const modal = new bootstrap.Modal(document.getElementById('allAnnouncementsModal'));
+                modal.show();
+            } catch (error) {
+                console.error('加载公告失败:', error);
+            }
+        }
+
+        function showAddTask() {
+            const modal = new bootstrap.Modal(document.getElementById('addTaskModal'));
+            modal.show();
+        }
+
+        async function createTask() {
+            const title = document.getElementById('taskTitle').value;
+            if (!title) { alert('请输入任务标题'); return; }
+            
+            try {
+                await axios.post(`${API_BASE_URL}/tasks`, {
+                    title: title,
+                    description: document.getElementById('taskDescription').value,
+                    priority: document.getElementById('taskPriority').value,
+                    due_date: document.getElementById('taskDueDate').value
+                });
+                alert('任务创建成功');
+                bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDescription').value = '';
+                loadTasksTable();
+                loadDashboardData();
+            } catch (error) {
+                alert('创建失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        function showAddLeave() {
+            const modal = new bootstrap.Modal(document.getElementById('addLeaveModal'));
+            modal.show();
+        }
+
+        async function createLeave() {
+            const startDate = document.getElementById('leaveStartDate').value;
+            const endDate = document.getElementById('leaveEndDate').value;
+            if (!startDate || !endDate) { alert('请选择日期'); return; }
+            
+            try {
+                await axios.post(`${API_BASE_URL}/leave-requests`, {
+                    leave_type: document.getElementById('leaveType').value,
+                    start_date: startDate,
+                    end_date: endDate,
+                    reason: document.getElementById('leaveReason').value
+                });
+                alert('请假申请提交成功');
+                bootstrap.Modal.getInstance(document.getElementById('addLeaveModal')).hide();
+                loadLeaveTable();
+                loadDashboardData();
+            } catch (error) {
+                alert('提交失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        async function checkIn() {
+            try {
+                await axios.post(`${API_BASE_URL}/attendance/check-in`);
+                alert('上班打卡成功');
+                loadAttendanceTable();
+            } catch (error) {
+                alert('打卡失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        async function checkOut() {
+            try {
+                await axios.post(`${API_BASE_URL}/attendance/check-out`);
+                alert('下班打卡成功');
+                loadAttendanceTable();
+            } catch (error) {
+                alert('打卡失败：' + (error.response?.data?.error || '未知错误'));
+            }
+        }
+
+        async function loadAttendanceTable() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/attendance`);
+                const records = response.data.records || [];
+                document.getElementById('attendanceTable').innerHTML = records.map(r => `
+                    <tr>
+                        <td>${new Date(r.check_in).toLocaleDateString()}</td>
+                        <td>${new Date(r.check_in).toLocaleTimeString()}</td>
+                        <td>${r.check_out ? new Date(r.check_out).toLocaleTimeString() : '-'}</td>
+                        <td><span class="badge ${r.status === 'present' ? 'bg-success' : 'bg-warning'}">${r.status}</span></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="4" class="text-center">暂无记录</td></tr>';
+            } catch (error) {
+                console.error('加载考勤失败:', error);
+            }
+        }
+
+        async function loadTasksTable() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/tasks`);
+                const tasks = response.data.tasks || [];
+                document.getElementById('tasksTable').innerHTML = tasks.map(t => `
+                    <tr>
+                        <td>${t.title}</td>
+                        <td><span class="badge bg-info">${t.priority}</span></td>
+                        <td><span class="badge bg-success">${t.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-success" onclick="updateTaskStatus(${t.task_id}, 'done')">完成</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="4" class="text-center">暂无任务</td></tr>';
+            } catch (error) {
+                console.error('加载任务失败:', error);
+            }
+        }
+
+        async function updateTaskStatus(taskId, status) {
+            try {
+                await axios.put(`${API_BASE_URL}/tasks/${taskId}`, { status });
+                loadTasksTable();
+            } catch (error) {
+                alert('更新失败');
+            }
+        }
+
+        async function loadLeaveTable() {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/leave-requests`);
+                const leaves = response.data.records || [];
+                document.getElementById('leaveTable').innerHTML = leaves.map(l => `
+                    <tr>
+                        <td>${l.leave_type}</td>
+                        <td>${l.start_date}</td>
+                        <td>${l.end_date}</td>
+                        <td><span class="badge bg-warning">${l.status}</span></td>
+                    </tr>
+                `).join('') || '<tr><td colspan="4" class="text-center">暂无请假记录</td></tr>';
+            } catch (error) {
+                console.error('加载请假失败:', error);
+            }
+        }
+
+        window.addEventListener('beforeunload', function() {
+            if (authToken) {
+                localStorage.setItem('authToken', authToken);
+            }
+        });
+    </script>
+</body>
+</html>

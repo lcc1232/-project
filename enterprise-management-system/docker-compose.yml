@@ -1,0 +1,91 @@
+# Docker Compose配置，用于快速部署整个系统
+version: '3.8'
+
+services:
+  # PostgreSQL数据库服务
+  postgres:
+    image: postgres:15-alpine  # 使用PostgreSQL 15版本
+    container_name: enterprise_db
+    environment:
+      POSTGRES_DB: enterprise_management  # 数据库名称
+      POSTGRES_USER: postgres              # 数据库用户名
+      POSTGRES_PASSWORD: secure_password   # 数据库密码
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256  # 认证方法
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # 数据持久化
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql  # 初始化脚本
+    ports:
+      - "5432:5432"  # 端口映射
+    networks:
+      - enterprise_network
+    healthcheck:  # 健康检查
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis缓存服务
+  redis:
+    image: redis:7-alpine
+    container_name: enterprise_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - enterprise_network
+    command: redis-server --appendonly yes --requirepass redis_password  # 启用持久化和密码
+
+  # Flask后端服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: enterprise_backend
+    environment:
+      FLASK_ENV: production  # 生产环境
+      DB_HOST: postgres      # 数据库主机
+      DB_PORT: 5432          # 数据库端口
+      DB_NAME: enterprise_management
+      DB_USER: postgres
+      DB_PASSWORD: secure_password
+      REDIS_URL: redis://:redis_password@redis:6379/0
+      JWT_SECRET_KEY: your-production-secret-key  # 生产环境密钥
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy  # 等待数据库健康
+      redis:
+        condition: service_started
+    networks:
+      - enterprise_network
+    volumes:
+      - ./logs:/app/logs  # 日志持久化
+      - ./uploads:/app/uploads  # 上传文件持久化
+
+  # Nginx反向代理服务器
+  nginx:
+    image: nginx:alpine
+    container_name: enterprise_nginx
+    ports:
+      - "80:80"   # HTTP端口
+      - "443:443" # HTTPS端口
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Nginx配置
+      - ./ssl:/etc/nginx/ssl  # SSL证书
+      - ./static:/usr/share/nginx/html  # 静态文件
+    depends_on:
+      - backend
+    networks:
+      - enterprise_network
+
+# 数据卷定义
+volumes:
+  postgres_data:  # PostgreSQL数据卷
+  redis_data:     # Redis数据卷
+
+# 网络定义
+networks:
+  enterprise_network:
+    driver: bridge  # 使用桥接网络
