@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - Augen 博客{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl">
+    <div class="mb-6 flex items-center justify-between">
+        <a href="{{ url_for('index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium inline-flex items-center gap-1">
+            ← 返回首页
+        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('edit', article_id=article.id) }}" 
+               class="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline">
+                ✏️ 编辑
+            </a>
+            <form method="POST" 
+                  action="{{ url_for('delete', article_id=article.id) }}" 
+                  onsubmit="return confirm('确定要删除这篇文章吗？')" 
+                  class="inline">
+                <button type="submit" 
+                        class="text-sm text-red-600 hover:text-red-800 font-medium hover:underline">
+                    🗑️ 删除
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <header class="mb-8 pb-6 border-b border-gray-200">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+            {{ article.title }}
+        </h1>
+        <div class="flex items-center gap-4 text-sm text-gray-500">
+            <span>📅 {{ article.created_at.strftime('%Y年%m月%d日') }}</span>
+            <span>⏱️ 大约 {{ article.content|length // 200 + 1 }} 分钟阅读</span>
+            <span>👁️ {{ article.views }} 次阅读</span>
+        </div>
+    </header>
+
+    <div class="prose prose-indigo prose-lg max-w-none">
+        {% for line in article.content.split('\n') %}
+            {% if line.strip() %}
+                <p>{{ line }}</p>
+            {% else %}
+                <br>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-gray-200 flex justify-between items-center">
+        
+        <span class="text-sm text-gray-400">作者：{{ article.author.username }}</span>
+        <a href="{{ url_for('index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+            查看更多文章 →
+        </a>
+    </div>
+</article>
+{% endblock %}

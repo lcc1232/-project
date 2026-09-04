@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{# ✅ 在页面顶部设置变量，隐藏排行榜 #}
+{% set hide_sidebar = True %}
+
+{% block title %}注册 - Augen 博客{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <h1 class="text-2xl font-bold text-gray-800 text-center">📝 注册</h1>
+        <p class="text-gray-500 text-center text-sm mt-1">加入我们，开始你的创作之旅</p>
+
+        <form method="POST" class="mt-6 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">用户名 <span class="text-red-500">*</span></label>
+                <input type="text" name="username" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">密码 <span class="text-red-500">*</span></label>
+                <input type="password" name="password" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">邮箱（选填）</label>
+                <input type="email" name="email"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+            </div>
+            <button type="submit" 
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition">
+                注册
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+            已有账号？<a href="{{ url_for('login') }}" class="text-indigo-600 hover:underline">去登录</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
